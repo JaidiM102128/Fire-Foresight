@@ -35,6 +35,13 @@ jobs:
         cd backend
         npm install
 
+    - name: Fix Mocha Permissions
+      run: chmod +x ./backend/node_modules/.bin/mocha
+
+    - name: Run Backend Tests
+      working-directory: backend
+      run: npm test
+
     - name: Run backend tests
       run: |
         cd backend
