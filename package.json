@@ -1,5 +1,8 @@
 {
   "devDependencies": {
     "mocha": "^10.8.2"
+  },
+  "dependencies": {
+    "expo": "^52.0.11"
   }
 }
