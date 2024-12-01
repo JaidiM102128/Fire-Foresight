@@ -1,33 +1,43 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert } from 'react-native';
 
-export default function AuthScreen({ navigation }) {
+export default function SignUpScreen({ navigation }) {
+  const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
 
-  // Handle Sign In
-  const handleSignIn = () => {
-    if (!email || !password) {
-      Alert.alert('Error', 'Please fill in both fields');
+  const handleSignUp = () => {
+    if (!username || !email || !password || !confirmPassword) {
+      Alert.alert('Error', 'Please fill in all fields');
       return;
     }
 
-    // Simulate authentication (for now, just check if fields are filled)
-    if (email === 'user@example.com' && password === 'password123') {
-      Alert.alert('Success', 'Sign In Successful', [
-        {
-          text: 'OK',
-          onPress: () => navigation.navigate('Home'), // Navigate to Home Screen after successful sign in
-        },
-      ]);
-    } else {
-      Alert.alert('Error', 'Invalid credentials');
+    if (password !== confirmPassword) {
+      Alert.alert('Error', 'Passwords do not match');
+      return;
     }
+
+    // If validation is successful, navigate to the Home or login screen (e.g., HomeScreen)
+    Alert.alert('Success', 'Sign Up Successful!', [
+      {
+        text: 'OK',
+        onPress: () => navigation.navigate('Home'), // Navigate to the Home screen after sign-up
+      },
+    ]);
   };
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Sign In</Text>
+      <Text style={styles.title}>Sign Up</Text>
+
+      {/* Username Input */}
+      <TextInput
+        style={styles.input}
+        placeholder="Username"
+        value={username}
+        onChangeText={setUsername}
+      />
 
       {/* Email Input */}
       <TextInput
@@ -47,22 +57,23 @@ export default function AuthScreen({ navigation }) {
         onChangeText={setPassword}
       />
 
-      {/* Sign In Button */}
-      <TouchableOpacity style={styles.button} onPress={handleSignIn}>
-        <Text style={styles.buttonText}>Sign In</Text>
-      </TouchableOpacity>
-
-      {/* Forgot Password */}
-      <TouchableOpacity onPress={() => Alert.alert('Forgot password')}>
-        <Text style={styles.forgotPassword}>Forgot Password?</Text>
-      </TouchableOpacity>
+      {/* Confirm Password Input */}
+      <TextInput
+        style={styles.input}
+        placeholder="Confirm Password"
+        secureTextEntry
+        value={confirmPassword}
+        onChangeText={setConfirmPassword}
+      />
 
       {/* Sign Up Button */}
-      <TouchableOpacity
-        style={[styles.button, styles.signUpButton]}
-        onPress={() => navigation.navigate('SignUp')} // Navigate to SignUp Screen
-      >
+      <TouchableOpacity style={styles.button} onPress={handleSignUp}>
         <Text style={styles.buttonText}>Sign Up</Text>
+      </TouchableOpacity>
+
+      {/* Navigation to Login Screen */}
+      <TouchableOpacity onPress={() => navigation.navigate('Auth')}>
+        <Text style={styles.navText}>Already have an account? Sign In</Text>
       </TouchableOpacity>
     </View>
   );
@@ -79,7 +90,6 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 32,
     fontWeight: 'bold',
-    color: '#333',
     marginBottom: 30,
   },
   input: {
@@ -106,12 +116,9 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: 'bold',
   },
-  forgotPassword: {
-    color: '#FF6347',
+  navText: {
     fontSize: 16,
-    marginBottom: 20,
-  },
-  signUpButton: {
-    backgroundColor: '#4CAF50',
+    color: '#007BFF',
+    marginTop: 10,
   },
 });

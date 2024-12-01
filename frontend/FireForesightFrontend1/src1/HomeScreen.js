@@ -1,10 +1,29 @@
-import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import React, { useState } from 'react';
+import { View, Text, StyleSheet, TouchableOpacity, TextInput, Button } from 'react-native';
 import MapView, { Marker } from 'react-native-maps';
 
-export default function HomeScreen() {
+export default function HomeScreen({ navigation }) {
+  const [searchQuery, setSearchQuery] = useState('');
+
+  // Handle Search Input Change
+  const handleSearchChange = (text) => {
+    setSearchQuery(text);
+  };
+
   return (
     <View style={styles.container}>
+      {/* Search Bar */}
+      <TextInput
+        style={styles.searchBar}
+        placeholder="Search for a location"
+        value={searchQuery}
+        onChangeText={handleSearchChange}
+      />
+
+      {/* Title Section */}
+      <Text style={styles.title}>Welcome to Fire Foresight</Text>
+      <Text style={styles.subtitle}>Explore the map and stay informed</Text>
+
       {/* Google Map */}
       <MapView
         style={styles.map}
@@ -23,28 +42,37 @@ export default function HomeScreen() {
         />
       </MapView>
 
-      {/* Buttons */}
+      {/* Buttons Section */}
       <View style={styles.buttonsContainer}>
-        <TouchableOpacity style={[styles.button, { backgroundColor: 'orange' }]}>
+        <TouchableOpacity
+          style={[styles.button, { backgroundColor: 'orange' }]}
+          onPress={() => navigation.navigate('FireRisk')} // Navigate to Fire Risk Info screen
+        >
           <Text style={styles.buttonText}>Fire Risk Information</Text>
+          <Text style={styles.infoText}>Learn about current fire risks in the region.</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={[styles.button, { backgroundColor: 'blue' }]}>
+
+        <TouchableOpacity
+          style={[styles.button, { backgroundColor: 'blue' }]}
+          onPress={() => navigation.navigate('WeatherInfo')} // Navigate to Weather Info screen
+        >
           <Text style={styles.buttonText}>Weather Information</Text>
+          <Text style={styles.infoText}>Get the latest weather updates for your area.</Text>
         </TouchableOpacity>
       </View>
 
       {/* Bottom Navigation */}
       <View style={styles.bottomNav}>
-        <TouchableOpacity style={styles.navItem}>
+        <TouchableOpacity style={styles.navItem} onPress={() => navigation.navigate('Home')}>
           <Text style={styles.navText}>🏠</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.navItem}>
+        <TouchableOpacity style={styles.navItem} onPress={() => navigation.navigate('SafetyGuidelines')}>
           <Text style={styles.navText}>📂</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.navItem}>
+        <TouchableOpacity style={styles.navItem} onPress={() => navigation.navigate('Notification')}>
           <Text style={styles.navText}>🔔</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.navItem}>
+        <TouchableOpacity style={styles.navItem} onPress={() => navigation.navigate('Settings')}>
           <Text style={styles.navText}>⚙️</Text>
         </TouchableOpacity>
       </View>
@@ -56,6 +84,28 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#f5f5f5',
+  },
+  searchBar: {
+    height: 40,
+    borderColor: '#ccc',
+    borderWidth: 1,
+    borderRadius: 8,
+    margin: 20,
+    paddingLeft: 10,
+    backgroundColor: '#fff',
+  },
+  title: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    color: '#333',
+    textAlign: 'center',
+    marginTop: 20,
+  },
+  subtitle: {
+    fontSize: 16,
+    color: '#777',
+    textAlign: 'center',
+    marginBottom: 10,
   },
   map: {
     flex: 4,
@@ -70,11 +120,17 @@ const styles = StyleSheet.create({
     padding: 15,
     borderRadius: 8,
     alignItems: 'center',
+    marginBottom: 20,
   },
   buttonText: {
     fontSize: 16,
     color: '#fff',
     fontWeight: 'bold',
+  },
+  infoText: {
+    fontSize: 14,
+    color: '#fff',
+    marginTop: 5,
   },
   bottomNav: {
     flexDirection: 'row',
