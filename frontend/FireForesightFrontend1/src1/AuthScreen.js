@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert } from 'react-native';
 
-export default function AuthScreen({ navigation }) {
+export default function AuthScreen({ route, navigation }) {
+  const { latitude, longitude } = route.params; // Receive latitude and longitude from HelloScreen
+
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
@@ -17,7 +19,10 @@ export default function AuthScreen({ navigation }) {
       Alert.alert('Success', 'Sign In Successful', [
         {
           text: 'OK',
-          onPress: () => navigation.navigate('Home'), // Navigate to Home Screen after successful sign in
+          onPress: () => {
+            console.log(`User's location: Latitude: ${latitude}, Longitude: ${longitude}`);
+            navigation.navigate('Home', { latitude, longitude }); // Navigate to Home Screen after successful sign-in
+          },
         },
       ]);
     } else {
@@ -60,7 +65,7 @@ export default function AuthScreen({ navigation }) {
       {/* Sign Up Button */}
       <TouchableOpacity
         style={[styles.button, styles.signUpButton]}
-        onPress={() => navigation.navigate('SignUp')} // Navigate to SignUp Screen
+        onPress={() => navigation.navigate('SignUp', { latitude, longitude })} // Pass location to SignUp Screen
       >
         <Text style={styles.buttonText}>Sign Up</Text>
       </TouchableOpacity>

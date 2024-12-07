@@ -1,13 +1,46 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, TextInput, Button } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, TextInput, Alert } from 'react-native';
 import MapView, { Marker } from 'react-native-maps';
+import axios from 'axios';
 
-export default function HomeScreen({ navigation }) {
+export default function HomeScreen({ route, navigation }) {
+  const { latitude, longitude } = route.params; // Get initial location
   const [searchQuery, setSearchQuery] = useState('');
+  const [location, setLocation] = useState({ latitude, longitude });
+  const [loading, setLoading] = useState(false); // For user feedback
 
   // Handle Search Input Change
-  const handleSearchChange = (text) => {
-    setSearchQuery(text);
+  const handleSearchChange = (text) => setSearchQuery(text);
+
+  // Fetch new location based on search query
+  const handleSearch = async () => {
+    if (!searchQuery.trim()) {
+      alert('Please enter a valid location to search.');
+      return;
+    }
+
+    setLoading(true); // Show loading state
+    try {
+      const apiKey = '156baf007d5d46bfba5420f36f99c551'; // Your API key
+      const response = await axios.get(`https://api.opencagedata.com/geocode/v1/json?q=${searchQuery}&key=${apiKey}`);
+      console.log('Geocoding API Response:', response.data); // Debug log
+
+      if (response.data.results.length > 0) {
+        const result = response.data.results[0];
+        const newLocation = {
+          latitude: result.geometry.lat,
+          longitude: result.geometry.lng,
+        };
+        setLocation(newLocation); // Update location
+      } else {
+        alert('Location not found. Try another search query.');
+      }
+    } catch (error) {
+      console.error('Error fetching location:', error.message, error.response?.data);
+      alert('An error occurred while fetching the location. Please try again later.');
+    } finally {
+      setLoading(false); // Hide loading state
+    }
   };
 
   return (
@@ -19,46 +52,37 @@ export default function HomeScreen({ navigation }) {
         value={searchQuery}
         onChangeText={handleSearchChange}
       />
+      <TouchableOpacity style={styles.searchButton} onPress={handleSearch} disabled={loading}>
+        <Text style={styles.searchButtonText}>{loading ? 'Loading...' : 'Search'}</Text>
+      </TouchableOpacity>
 
-      {/* Title Section */}
-      <Text style={styles.title}>Welcome to Fire Foresight</Text>
-      <Text style={styles.subtitle}>Explore the map and stay informed</Text>
-
-      {/* Google Map */}
+      {/* Map View */}
       <MapView
         style={styles.map}
-        initialRegion={{
-          latitude: 33.5731, // Default location (Rabat, Morocco)
-          longitude: -7.5898,
+        region={{
+          latitude: location.latitude,
+          longitude: location.longitude,
           latitudeDelta: 0.5,
           longitudeDelta: 0.5,
         }}
       >
-        {/* Add a Marker */}
         <Marker
-          coordinate={{ latitude: 33.5731, longitude: -7.5898 }}
-          title="Rabat"
-          description="Current focus location"
+          coordinate={location}
+          title="Selected Location"
+          description="This is the location you searched for or your current location."
         />
       </MapView>
 
-      {/* Buttons Section */}
-      <View style={styles.buttonsContainer}>
-        <TouchableOpacity
-          style={[styles.button, { backgroundColor: 'orange' }]}
-          onPress={() => navigation.navigate('FireRisk')} // Navigate to Fire Risk Info screen
-        >
-          <Text style={styles.buttonText}>Fire Risk Information</Text>
-          <Text style={styles.infoText}>Learn about current fire risks in the region.</Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity
-          style={[styles.button, { backgroundColor: 'blue' }]}
-          onPress={() => navigation.navigate('WeatherInfo')} // Navigate to Weather Info screen
-        >
-          <Text style={styles.buttonText}>Weather Information</Text>
-          <Text style={styles.infoText}>Get the latest weather updates for your area.</Text>
-        </TouchableOpacity>
+      {/* Placeholder Sections for Fire Risk and Weather Information */}
+      <View style={styles.infoContainer}>
+        <View style={styles.infoBox}>
+          <Text style={styles.infoTitle}>Fire Risk Information</Text>
+          <Text style={styles.infoText}>Fire risk data will appear here once available.</Text>
+        </View>
+        <View style={styles.infoBox}>
+          <Text style={styles.infoTitle}>Weather Information</Text>
+          <Text style={styles.infoText}>Weather data will appear here once available.</Text>
+        </View>
       </View>
 
       {/* Bottom Navigation */}
@@ -94,43 +118,39 @@ const styles = StyleSheet.create({
     paddingLeft: 10,
     backgroundColor: '#fff',
   },
-  title: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    color: '#333',
-    textAlign: 'center',
-    marginTop: 20,
-  },
-  subtitle: {
-    fontSize: 16,
-    color: '#777',
-    textAlign: 'center',
+  searchButton: {
+    backgroundColor: '#FF6347',
+    padding: 10,
+    borderRadius: 8,
+    marginHorizontal: 20,
     marginBottom: 10,
   },
-  map: {
-    flex: 4,
-    width: '100%',
-  },
-  buttonsContainer: {
-    flex: 2,
-    paddingHorizontal: 20,
-    justifyContent: 'space-around',
-  },
-  button: {
-    padding: 15,
-    borderRadius: 8,
-    alignItems: 'center',
-    marginBottom: 20,
-  },
-  buttonText: {
-    fontSize: 16,
+  searchButtonText: {
     color: '#fff',
+    fontSize: 16,
+    textAlign: 'center',
+  },
+  map: {
+    flex: 1,
+  },
+  infoContainer: {
+    padding: 20,
+    backgroundColor: '#fff',
+    marginTop: 10,
+    borderTopWidth: 1,
+    borderColor: '#ccc',
+  },
+  infoBox: {
+    marginBottom: 15,
+  },
+  infoTitle: {
+    fontSize: 18,
     fontWeight: 'bold',
+    color: '#333',
   },
   infoText: {
-    fontSize: 14,
-    color: '#fff',
-    marginTop: 5,
+    fontSize: 16,
+    color: '#777',
   },
   bottomNav: {
     flexDirection: 'row',
@@ -139,6 +159,9 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     borderTopWidth: 1,
     borderColor: '#ccc',
+    position: 'absolute',
+    bottom: 0,
+    width: '100%',
   },
   navItem: {
     alignItems: 'center',

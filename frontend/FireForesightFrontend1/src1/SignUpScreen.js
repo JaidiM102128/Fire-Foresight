@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert } from 'react-native';
 
-export default function SignUpScreen({ navigation }) {
+export default function SignUpScreen({ route, navigation }) {
+  const { latitude, longitude } = route.params; // Access location data passed from the HelloScreen
+
   const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -18,11 +20,16 @@ export default function SignUpScreen({ navigation }) {
       return;
     }
 
-    // If validation is successful, navigate to the Home or login screen (e.g., HomeScreen)
+    // After successful validation, navigate to Home screen or another screen (e.g., HomeScreen)
     Alert.alert('Success', 'Sign Up Successful!', [
       {
         text: 'OK',
-        onPress: () => navigation.navigate('Home'), // Navigate to the Home screen after sign-up
+        onPress: () => {
+          // You can store the latitude and longitude in the user's profile if needed
+          // For now, let's just navigate to Home
+          console.log(`User's location: Latitude: ${latitude}, Longitude: ${longitude}`);
+          navigation.navigate('Home', { latitude, longitude }); // Pass location to Home screen
+        },
       },
     ]);
   };
