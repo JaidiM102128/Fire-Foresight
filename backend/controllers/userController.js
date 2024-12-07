@@ -1,109 +1,60 @@
-const db = require('../models'); // Assuming you're using Sequelize or a similar ORM for the database
+const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
+const userModel = require('../models/userModel');
+const settingsModel = require('../models/settingsModel');
 
-/**
- * Create a new user
- * @route POST /api/users
- * @description Create a new user and store it in the database
- * @access Public
- */
-exports.createUser = async (req, res) => {
-  const { name, email, password } = req.body;
-
+exports.signup = async (req, res) => {
   try {
-    // Simple validation
-    if (!name || !email || !password) {
-      return res.status(400).json({ message: 'All fields are required' });
+    const { username, email, password } = req.body;
+
+    // Check if the email is already in use
+    const userExists = await userModel.findUserByEmail(email);
+    if (userExists) {
+      return res.status(400).json({ message: 'Email already in use' });
     }
 
-    // Create a new user in the database
-    const newUser = await db.User.create({
-      name,
-      email,
-      password, // In a real-world app, you should hash the password before storing it
+    // Hash the password
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(password, salt);
+
+    // Create a new user
+    const user = await userModel.createUser(username, email, hashedPassword);
+
+    // Create default settings for the new user
+    await settingsModel.createDefaultSettings(user.id);
+
+    // Generate JWT token
+    const token = jwt.sign({ id: user.id, username: user.username, email: user.email }, process.env.JWT_SECRET, { expiresIn: '1h' });
+
+    res.status(201).json({
+      message: 'User created successfully!',
+      user,
+      token,
     });
-
-    res.status(201).json({ success: true, data: newUser });
-  } catch (error) {
-    console.error('Error creating user:', error);
-    res.status(500).json({ success: false, message: 'Failed to create user' });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: err.message });
   }
 };
 
-/**
- * Get user information by ID
- * @route GET /api/users/:id
- * @description Get user details by ID
- * @access Public
- */
-exports.getUserById = async (req, res) => {
-  const { id } = req.params;
-
+exports.login = async (req, res) => {
   try {
-    const user = await db.User.findByPk(id);
+    const { email, password } = req.body;
+    const user = await userModel.findUserByEmail(email);
 
     if (!user) {
-      return res.status(404).json({ message: 'User not found' });
+      return res.status(401).json({ message: 'Invalid credentials' });
     }
 
-    res.status(200).json({ success: true, data: user });
-  } catch (error) {
-    console.error('Error fetching user:', error);
-    res.status(500).json({ success: false, message: 'Failed to fetch user' });
-  }
-};
-
-/**
- * Update user information by ID
- * @route PUT /api/users/:id
- * @description Update user details (e.g., name, email)
- * @access Public
- */
-exports.updateUser = async (req, res) => {
-  const { id } = req.params;
-  const { name, email, password } = req.body;
-
-  try {
-    const user = await db.User.findByPk(id);
-
-    if (!user) {
-      return res.status(404).json({ message: 'User not found' });
+    const isMatch = await bcrypt.compare(password, user.password);
+    if (!isMatch) {
+      return res.status(401).json({ message: 'Invalid credentials' });
     }
 
-    // Update the user information
-    user.name = name || user.name;
-    user.email = email || user.email;
-    user.password = password || user.password; // Again, you should hash the password in real scenarios
+    const token = jwt.sign({ id: user.id, username: user.username, email: user.email }, process.env.JWT_SECRET, { expiresIn: '1h' });
 
-    await user.save();
-
-    res.status(200).json({ success: true, data: user });
-  } catch (error) {
-    console.error('Error updating user:', error);
-    res.status(500).json({ success: false, message: 'Failed to update user' });
-  }
-};
-
-/**
- * Delete a user by ID
- * @route DELETE /api/users/:id
- * @description Delete a user by ID
- * @access Public
- */
-exports.deleteUser = async (req, res) => {
-  const { id } = req.params;
-
-  try {
-    const user = await db.User.findByPk(id);
-
-    if (!user) {
-      return res.status(404).json({ message: 'User not found' });
-    }
-
-    await user.destroy();
-
-    res.status(200).json({ success: true, message: 'User deleted successfully' });
-  } catch (error) {
-    console.error('Error deleting user:', error);
-    res.status(500).json({ success: false, message: 'Failed to delete user' });
+    res.status(200).json({ message: 'Login successful', user, token });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
   }
 };
