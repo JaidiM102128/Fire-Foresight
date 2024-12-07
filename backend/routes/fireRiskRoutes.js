@@ -1,18 +1,9 @@
-// Import necessary modules
 const express = require('express');
 const router = express.Router();
-
-// Import the controller
 const fireRiskController = require('../controllers/fireRiskController');
+const authMiddleware = require('../middleware/authMiddleware');
 
-// Define routes
-
-/**
- * @route GET /api/fire-risk
- * @description Search fire risk for a specific location
- * @queryParam location (string) - The name of the location
- * @access Public
- */
-router.get('/', fireRiskController.searchFireRisk);
+// Calculate fire risk based on the location (requires authentication)
+router.post('/calculate', authMiddleware, fireRiskController.calculateRisk);
 
 module.exports = router;
