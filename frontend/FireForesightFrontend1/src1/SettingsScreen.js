@@ -5,12 +5,23 @@ export default function SettingsScreen({ navigation }) {
   const [isNotificationsEnabled, setIsNotificationsEnabled] = useState(true);
   const [isDarkMode, setIsDarkMode] = useState(false);
 
-  const handleToggleNotification = () => setIsNotificationsEnabled(previousState => !previousState);
-  const handleToggleDarkMode = () => setIsDarkMode(previousState => !previousState);
+  const handleToggleNotification = () => setIsNotificationsEnabled((prevState) => !prevState);
+  const handleToggleDarkMode = () => setIsDarkMode((prevState) => !prevState);
 
   const handleLogOut = () => {
-    // Log out logic (if any)
-    Alert.alert("Logged Out", "You have been logged out successfully.", [{ text: "OK" }]);
+    Alert.alert(
+      'Log Out',
+      'Are you sure you want to log out?',
+      [
+        { text: 'Cancel', style: 'cancel' },
+        {
+          text: 'Log Out',
+          style: 'destructive',
+          onPress: () => navigation.navigate('GetStarted'), // Navigate to GetStartedScreen or login screen
+        },
+      ],
+      { cancelable: true }
+    );
   };
 
   return (
@@ -18,7 +29,7 @@ export default function SettingsScreen({ navigation }) {
       <Text style={styles.title}>Settings</Text>
 
       {/* Notifications Setting */}
-      <TouchableOpacity style={styles.settingItem} onPress={handleToggleNotification}>
+      <View style={styles.settingItem}>
         <Text style={styles.settingText}>Enable Notifications</Text>
         <Switch
           value={isNotificationsEnabled}
@@ -26,10 +37,10 @@ export default function SettingsScreen({ navigation }) {
           thumbColor="#fff"
           trackColor={{ false: '#767577', true: '#81b0ff' }}
         />
-      </TouchableOpacity>
+      </View>
 
       {/* Dark Mode Setting */}
-      <TouchableOpacity style={styles.settingItem} onPress={handleToggleDarkMode}>
+      <View style={styles.settingItem}>
         <Text style={styles.settingText}>Dark Mode</Text>
         <Switch
           value={isDarkMode}
@@ -37,17 +48,7 @@ export default function SettingsScreen({ navigation }) {
           thumbColor="#fff"
           trackColor={{ false: '#767577', true: '#81b0ff' }}
         />
-      </TouchableOpacity>
-
-      {/* Account Settings */}
-      <TouchableOpacity style={styles.settingItem} onPress={() => navigation.navigate('Account')}>
-        <Text style={styles.settingText}>Account</Text>
-      </TouchableOpacity>
-
-      {/* Help Section */}
-      <TouchableOpacity style={styles.settingItem} onPress={() => navigation.navigate('Help')}>
-        <Text style={styles.settingText}>Help & Support</Text>
-      </TouchableOpacity>
+      </View>
 
       {/* Log Out Button */}
       <TouchableOpacity style={styles.logoutButton} onPress={handleLogOut}>
@@ -66,7 +67,7 @@ export default function SettingsScreen({ navigation }) {
           <Text style={styles.navText}>🔔</Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.navItem} onPress={() => navigation.navigate('Settings')}>
-          <Text style={styles.navText}>⚙️</Text>
+          <Text style={[styles.navText, styles.activeNavText]}>⚙️</Text>
         </TouchableOpacity>
       </View>
     </View>
@@ -111,21 +112,25 @@ const styles = StyleSheet.create({
   },
   bottomNav: {
     flexDirection: 'row',
-    justifyContent: 'space-around',
+    justifyContent: 'space-evenly',
     backgroundColor: '#fff',
     paddingVertical: 10,
     borderTopWidth: 1,
     borderColor: '#ccc',
     position: 'absolute',
     bottom: 0,
-    width: '100%',
+    left: 0, // Ensures alignment starts at the screen's left edge
+    right: 0, // Ensures alignment extends to the screen's right edge
   },
   navItem: {
     alignItems: 'center',
-    padding: 5,
+    flex: 1, // Evenly distribute space between items
   },
   navText: {
-    fontSize: 18,
+    fontSize: 22, // Larger size for better visibility
     color: '#555',
+  },
+  activeNavText: {
+    color: '#FF6347', // Highlight active screen icon
   },
 });

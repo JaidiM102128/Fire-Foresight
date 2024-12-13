@@ -4,7 +4,7 @@ import { View, Text, StyleSheet, TouchableOpacity, Linking, Alert, ScrollView } 
 export default function SafetyGuidelinesScreen({ navigation }) {
 
   const emergencyContact = () => {
-    Alert.alert('Emergency Contacts', 'Dial 112 for Fire Emergency', [{ text: 'OK' }]);
+    Alert.alert('Emergency Contacts', 'Dial 112 for Fire Emergency 🚒', [{ text: 'OK' }]);
   };
 
   const openMap = () => {
@@ -12,73 +12,52 @@ export default function SafetyGuidelinesScreen({ navigation }) {
   };
 
   return (
-    <ScrollView style={styles.container}>
-      <Text style={styles.title}>Emergency Guidelines</Text>
+    <View style={styles.container}>
+      <ScrollView contentContainerStyle={styles.scrollContainer}>
 
-      <Text style={styles.subTitle}>What to Do in Case of a Fire</Text>
-      <Text style={styles.text}>
-        In case of a fire emergency, follow these steps:
-      </Text>
-      <View style={styles.listContainer}>
-        <Text style={styles.text}>1. Stay calm and alert.</Text>
-        <Text style={styles.text}>2. Evacuate the building immediately.</Text>
-        <Text style={styles.text}>3. Use the nearest exit and do not use elevators.</Text>
-        <Text style={styles.text}>4. If you encounter smoke, crawl to avoid inhaling it.</Text>
-        <Text style={styles.text}>5. Once outside, stay at a safe distance from the building.</Text>
-        <Text style={styles.text}>6. Call emergency services for assistance.</Text>
-      </View>
+        <Text style={styles.subTitle}>What to Do in Case of a Forest Fire 🌳🔥</Text>
+        <Text style={styles.text}>In case of a forest fire, follow these steps to ensure your safety:</Text>
+        <View style={styles.listContainer}>
+          <Text style={styles.text}>1. Stay calm and alert 🚨.</Text>
+          <Text style={styles.text}>2. Evacuate the area immediately 🚶‍♂️.</Text>
+          <Text style={styles.text}>3. Avoid the smoke, as it can be toxic 🌫️.</Text>
+          <Text style={styles.text}>4. If possible, go to a safe area, preferably near water 🌊.</Text>
+          <Text style={styles.text}>5. Alert local authorities or fire services 🆘.</Text>
+        </View>
 
-      <Text style={styles.subTitle}>Fire Safety Tips</Text>
-      <View style={styles.listContainer}>
-        <Text style={styles.text}>- Install smoke detectors in your home or workplace.</Text>
-        <Text style={styles.text}>- Keep fire extinguishers accessible and ensure they are properly maintained.</Text>
-        <Text style={styles.text}>- Conduct fire drills regularly to prepare everyone for emergencies.</Text>
-        <Text style={styles.text}>- Never block fire exits or escape routes.</Text>
-      </View>
+        <Text style={styles.subTitle}>Forest Fire Safety Tips 🌳🔥</Text>
+        <View style={styles.listContainer}>
+          <Text style={styles.text}>- Clear brush and dry leaves near your home 🔥🍂.</Text>
+          <Text style={styles.text}>- Keep fire breaks or gaps around wooded areas 🔨.</Text>
+          <Text style={styles.text}>- Avoid outdoor fires in windy conditions 🌬️🔥.</Text>
+          <Text style={styles.text}>- Be cautious when using tools like chainsaws, especially during dry weather 🔧.</Text>
+        </View>
 
-      <Text style={styles.subTitle}>Emergency Contacts</Text>
-      <View style={styles.contactContainer}>
-        <TouchableOpacity onPress={emergencyContact}>
-          <Text style={styles.contactText}>Fire Emergency: 112</Text>
-        </TouchableOpacity>
-        <TouchableOpacity onPress={emergencyContact}>
-          <Text style={styles.contactText}>Police Emergency: 911</Text>
-        </TouchableOpacity>
-        <TouchableOpacity onPress={emergencyContact}>
-          <Text style={styles.contactText}>Ambulance: 999</Text>
-        </TouchableOpacity>
-      </View>
+        <Text style={styles.subTitle}>Emergency Contacts 🚨</Text>
+        <View style={styles.contactContainer}>
+          <TouchableOpacity onPress={emergencyContact}>
+            <Text style={styles.contactText}>🔥 Fire Emergency: 15</Text>
+          </TouchableOpacity>
+          <TouchableOpacity onPress={emergencyContact}>
+            <Text style={styles.contactText}>🚔 Police Emergency: 19</Text>
+          </TouchableOpacity>
+          <TouchableOpacity onPress={emergencyContact}>
+            <Text style={styles.contactText}>🚑 Ambulance: 150</Text>
+          </TouchableOpacity>
+        </View>
 
-      <Text style={styles.subTitle}>Emergency Teams in Your Area</Text>
-      <Text style={styles.text}>Here are some of the emergency teams available in your region:</Text>
-      <View style={styles.listContainer}>
-        <Text style={styles.text}>- Fire Department: 5 Teams, located in key zones.</Text>
-        <Text style={styles.text}>- Ambulance Services: 4 Units, ready for immediate response.</Text>
-        <Text style={styles.text}>- Rescue and First-Aid Teams: 3 Units available 24/7.</Text>
-      </View>
+        <Text style={styles.subTitle}>Forest Fire Prevention 🔥🌲</Text>
+        <Text style={styles.text}>To prevent forest fires, follow these guidelines:</Text>
+        <View style={styles.listContainer}>
+          <Text style={styles.text}>- Never leave campfires unattended 🔥👀.</Text>
+          <Text style={styles.text}>- Always fully extinguish fires after use 🔥💧.</Text>
+          <Text style={styles.text}>- Avoid burning debris on windy days 🌬️.</Text>
+          <Text style={styles.text}>- Follow local fire bans and restrictions 📜❌.</Text>
+        </View>
 
-      <Text style={styles.subTitle}>Evacuation Plans</Text>
-      <Text style={styles.text}>
-        Familiarize yourself with the evacuation routes in your building or neighborhood. It's important to know where the emergency exits are and how to get to safety quickly.
-      </Text>
-      <TouchableOpacity style={styles.linkButton} onPress={openMap}>
-        <Text style={styles.linkText}>View Emergency Routes on Map</Text>
-      </TouchableOpacity>
+        <Text style={styles.footerText}>Stay Safe, Stay Alert 🚨</Text>
+      </ScrollView>
 
-      <Text style={styles.subTitle}>Fire Prevention Guidelines</Text>
-      <Text style={styles.text}>
-        To minimize the risk of fire, follow these precautions:
-      </Text>
-      <View style={styles.listContainer}>
-        <Text style={styles.text}>- Do not overload electrical outlets or power strips.</Text>
-        <Text style={styles.text}>- Avoid leaving cooking appliances unattended.</Text>
-        <Text style={styles.text}>- Store flammable materials safely and away from heat sources.</Text>
-        <Text style={styles.text}>- Keep fire exits clear and accessible at all times.</Text>
-      </View>
-
-      <Text style={styles.footerText}>Stay Safe and Be Prepared</Text>
-
-      {/* Bottom Navigation */}
       <View style={styles.bottomNav}>
         <TouchableOpacity style={styles.navItem} onPress={() => navigation.navigate('Home')}>
           <Text style={styles.navText}>🏠</Text>
@@ -93,7 +72,7 @@ export default function SafetyGuidelinesScreen({ navigation }) {
           <Text style={styles.navText}>⚙️</Text>
         </TouchableOpacity>
       </View>
-    </ScrollView>
+    </View>
   );
 }
 
@@ -103,17 +82,15 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     padding: 20,
   },
-  title: {
-    fontSize: 28,
-    fontWeight: 'bold',
-    color: '#333',
-    marginBottom: 15,
+  scrollContainer: {
+    paddingBottom: 100, // Ensure enough space for scrolling content
   },
+  
   subTitle: {
-    fontSize: 22,
+    fontSize: 20,
     fontWeight: 'bold',
-    color: '#333',
-    marginTop: 15,
+    color: '#FF6347',
+    marginTop: 20,
     marginBottom: 10,
   },
   text: {
@@ -134,7 +111,7 @@ const styles = StyleSheet.create({
   },
   linkButton: {
     marginTop: 20,
-    padding: 10,
+    padding: 12,
     backgroundColor: '#FF6347',
     borderRadius: 8,
     alignItems: 'center',
@@ -150,23 +127,29 @@ const styles = StyleSheet.create({
     marginTop: 30,
     textAlign: 'center',
   },
+  // Bottom Navigation
   bottomNav: {
     flexDirection: 'row',
-    justifyContent: 'space-around',
+    justifyContent: 'space-evenly', // Using space-evenly to evenly distribute nav items
     backgroundColor: '#fff',
-    paddingVertical: 10,
+    paddingVertical: 5,
     borderTopWidth: 1,
     borderColor: '#ccc',
     position: 'absolute',
     bottom: 0,
-    width: '100%',
+    width: '110%', // Ensure it spans the entire width of the screen
+    paddingBottom: 0, // Adjust padding so it fits neatly at the bottom
   },
   navItem: {
     alignItems: 'center',
-    padding: 5,
+    padding: 10,
+    flex: 1, // Evenly distribute space between items
   },
   navText: {
-    fontSize: 18,
+    fontSize: 22, // Larger size for better visibility
     color: '#555',
+  },
+  activeNavText: {
+    color: '#FF6347', // Highlight active screen icon
   },
 });

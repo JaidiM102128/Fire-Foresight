@@ -9,7 +9,21 @@
       "android"
     ],
     "android": {
-      "package": "androidcom.example.myapp"
-    }
+      "package": "com.example.myapp", 
+      "permissions": [
+        "ACCESS_FINE_LOCATION", 
+        "ACCESS_COARSE_LOCATION"
+      ]
+    },
+    "ios": {
+      "bundleIdentifier": "com.example.myapp",
+      "supportsTablet": true,
+      "infoPlist": {
+        "UIBackgroundModes": ["fetch", "location"]
+      }
+    },
+    "plugins": [
+      "expo-notifications"
+    ]
   }
 }
